@@ -57,7 +57,8 @@ impl SamplesPlayer {
         };
 
         // Play the custom source
+        std::thread::sleep(Duration::from_millis(500)); // neeeded for some reason, because rodio doesn't play properly otherwise
         stream_handle.play_raw(source).unwrap();
-        std::thread::sleep(Duration::from_millis(file.duration as u64 * 1000u64));
+        std::thread::sleep(Duration::from_secs_f32(file.duration));
     }
 }

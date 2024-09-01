@@ -1,29 +1,21 @@
-use std::time::Duration;
 use std::{fmt::Result, path::Path};
 
-use io::audio_file::AudioFile;
-use io::sample_player::SamplesPlayer;
+use io::{audio_file::AudioFile, sample_player::SamplesPlayer};
 use plotters::prelude::*;
-use rodio::OutputStream;
 
 mod io;
 
-fn main() -> Result {
-    println!("Hello, world!");
-
+fn main() {
     // let path: &Path = Path::new("./test-files/Test-16bit-PCM-Mono-96khz.wav");
     // let path: &Path = Path::new("./test-files/Test-32bit-float-Mono.wav");
-    let path: &Path = Path::new("./test-files/Test-32bit-PCM-Mono.wav");
-    println!("Path: {}", path.to_str().unwrap());
-    println!("Working dir: {:#?}", std::env::current_dir());
+    // let path: &Path = Path::new("./test-files/Test-32bit-PCM-Mono.wav");
+    let path: &Path = Path::new("./test-files/Test-8bit-PCM-Mono-unsigned.wav");
 
     let file: AudioFile = AudioFile::load_wav_file(path.to_str().unwrap()).unwrap();
 
-    make_chart(&file.data)?;
+    make_chart(&file.data).unwrap();
 
     SamplesPlayer::play(&file);
-
-    Ok(())
 }
 
 fn make_chart(data: &Vec<f32>) -> Result {
