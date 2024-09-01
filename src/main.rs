@@ -15,7 +15,7 @@ fn main() {
 
     make_chart(&file.data).unwrap();
 
-    SamplesPlayer::play(&file);
+    SamplesPlayer::play(&file); // Playback for whatever reason doesn't always work
 }
 
 fn make_chart(data: &Vec<f32>) -> Result {
