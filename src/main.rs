@@ -2,23 +2,27 @@ use std::{fmt::Result, path::Path};
 
 use io::{audio_file::AudioFile, sample_player::SamplesPlayer};
 use plotters::prelude::*;
+use processing::fourier_transform;
 
 mod io;
+mod processing;
 
 fn main() {
     // let path: &Path = Path::new("./test-files/Test-16bit-PCM-Mono-96khz.wav");
     // let path: &Path = Path::new("./test-files/Test-32bit-float-Mono.wav");
     // let path: &Path = Path::new("./test-files/Test-32bit-PCM-Mono.wav");
-    let path: &Path = Path::new("./test-files/Test-8bit-PCM-Mono-unsigned.wav");
+    // let path: &Path = Path::new("./test-files/Test-8bit-PCM-Mono-unsigned.wav");
+    let path: &Path = Path::new("./test-files/Test-24bit-PCM-Mono.wav");
 
     let file: AudioFile = AudioFile::load_wav_file(path.to_str().unwrap()).unwrap();
 
     make_chart(&file.data).unwrap();
 
     SamplesPlayer::play(&file); // Playback for whatever reason doesn't always work
+    SamplesPlayer::play(&file); // Playback for whatever reason doesn't always work
 }
 
-fn make_chart(data: &Vec<f32>) -> Result {
+fn make_chart(data: &Vec<f64>) -> Result {
     // Use plotters to plot file.data
     let root = BitMapBackend::new("output.png", (640, 480)).into_drawing_area();
     root.fill(&WHITE).unwrap();
@@ -34,7 +38,7 @@ fn make_chart(data: &Vec<f32>) -> Result {
 
     chart
         .draw_series(LineSeries::new(
-            data.iter().enumerate().map(|(x, y)| (x, *y as f64)),
+            data.iter().enumerate().map(|(x, y)| (x, *y)),
             &RED,
         ))
         .unwrap();

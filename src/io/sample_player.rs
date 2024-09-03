@@ -49,8 +49,11 @@ impl SamplesPlayer {
     pub fn play(file: &AudioFile) {
         let (_stream, stream_handle) = OutputStream::try_default().unwrap();
         // Create a custom source from the borrowed samples
+
+        let f32_samples = file.data.clone().into_iter().map(|x| x as f32).collect();
+
         let source = SamplesPlayer {
-            samples: file.data.clone(),
+            samples: f32_samples,
             sample_rate: file.sample_rate as u32,
             channels: file.channels as u16,
             current_index: 0,
@@ -59,6 +62,6 @@ impl SamplesPlayer {
         // Play the custom source
         std::thread::sleep(Duration::from_millis(500)); // neeeded for some reason, because rodio doesn't play properly otherwise
         stream_handle.play_raw(source).unwrap();
-        std::thread::sleep(Duration::from_secs_f32(file.duration));
+        std::thread::sleep(Duration::from_secs_f32(file.duration()));
     }
 }
