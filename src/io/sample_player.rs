@@ -50,7 +50,7 @@ impl SamplesPlayer {
         let (_stream, stream_handle) = OutputStream::try_default().unwrap();
         // Create a custom source from the borrowed samples
 
-        let f32_samples = file.data.clone().into_iter().map(|x| x as f32).collect();
+        let f32_samples = file.data.clone().into_iter().map(|x| x as f32).collect(); // Play only first channel
 
         let source = SamplesPlayer {
             samples: f32_samples,

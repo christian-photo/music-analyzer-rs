@@ -15,6 +15,10 @@ pub enum WaveFormatType {
 
 impl AudioFile {
     pub fn load_wav_file(path: &str) -> Result<AudioFile> {
+        // Loads in a wave file by path
+        // Currently supports PCM and IEEEFloat data
+        // Extensible currently not supported
+        // If there is more than one channel present in the file, only the first channel will be used
         let file: Result<std::fs::File> = std::fs::File::open(path); // Open the wave file
 
         if file.is_err() {
@@ -107,6 +111,11 @@ impl AudioFile {
             } else if format == WaveFormatType::IEEEFloat {
                 samples = AudioFile::ieee_float_to_samples(bits_per_sample, &data);
             }
+
+            if channels > 1 {
+                // only use first channel
+                samples = samples.into_iter().step_by(channels as usize).collect();
+            }
         }
         return Ok(AudioFile::new(
             channels,
@@ -117,6 +126,7 @@ impl AudioFile {
     }
 
     fn ieee_float_to_samples(bits_per_sample: i16, data: &Vec<u8>) -> Vec<f64> {
+        // IEEE float samples are already normalized
         let mut samples: Vec<f64> = Vec::new();
 
         match bits_per_sample {
@@ -199,7 +209,7 @@ impl AudioFile {
             _ => {
                 // Unsupported bit depth
                 eprintln!("Unsupported bits per sample: {}", bits_per_sample);
-            } // TODO: Add support for 24-bit and 32-bit floating point samples
+            }
         }
 
         return samples;
